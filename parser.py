@@ -1,3 +1,5 @@
+import typing
+
 import requests
 from bs4 import BeautifulSoup
 import sqlite3
@@ -98,6 +100,42 @@ def write_title_db(article: str, title: str) -> None:
     cursor.execute(insert_row)
     cursor.connection.commit()
     cursor.close()
+
+
+async def select_title_db(article: str) -> typing.Optional[str]:
+    """
+    Select title by article from db
+    :param article: str, product article
+    :return: str|None, product title or None if product doesnt exist in db
+    """
+    try:
+        cursor = get_cursor()
+        cursor.execute("""
+            select title from article_title where article='{article}'
+        """.format(article=article))
+        result = cursor.fetchone()
+        cursor.close()
+        return result
+    except:
+        return None
+
+
+async def select_brand_db(article: str) -> typing.Optional[str]:
+    """
+    Select brand by article from db
+    :param article: str, product article
+    :return: str|None, product brand or None if product doesnt exist in db
+    """
+    try:
+        cursor = get_cursor()
+        cursor.execute("""
+            select brand from article_brand where article='{article}'
+        """.format(article=article))
+        result = cursor.fetchone()
+        cursor.close()
+        return result
+    except:
+        return None
 
 
 def main():

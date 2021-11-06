@@ -16,8 +16,12 @@ async def start(message: types.Message):
 async def get_brand(message: types.Message):
     try:
         article = message.get_args()
-        brand = await parser.get_brand(f'https://www.wildberries.ru/catalog/{article}/detail.aspx')
-        parser.write_brand_db(article, brand)
+        brand = await parser.select_brand_db(article)
+        if not brand:
+            brand = await parser.get_brand(f'https://www.wildberries.ru/catalog/{article}/detail.aspx')
+            parser.write_brand_db(article, brand)
+        else:
+            brand = brand[0]
         await message.reply(f'This article belongs to {brand}')
     except:
         await message.reply('Check that you type correct article!')
@@ -27,8 +31,12 @@ async def get_brand(message: types.Message):
 async def get_title(message: types.Message):
     try:
         article = message.get_args()
-        title = await parser.get_title(f'https://www.wildberries.ru/catalog/{article}/detail.aspx')
-        parser.write_title_db(article, title)
+        title = await parser.select_title_db(article)
+        if not title:
+            title = await parser.get_title(f'https://www.wildberries.ru/catalog/{article}/detail.aspx')
+            parser.write_title_db(article, title)
+        else:
+            title = title[0]
         await message.reply(f'Product with this article has the next title: {title}')
     except:
         await message.reply('Check that you type correct article!')
